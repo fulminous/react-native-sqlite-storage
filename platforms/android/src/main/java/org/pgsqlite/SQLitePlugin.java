@@ -48,7 +48,7 @@ import java.io.IOException;
 
 public class SQLitePlugin extends ReactContextBaseJavaModule {
 
-    public static final String TAG = SQLitePlugin.class.getSimpleName();
+    public static final String TAG = "Fulminous";
 
     private static final String PLUGIN_NAME = "SQLite";
 
@@ -338,9 +338,13 @@ public class SQLitePlugin extends ReactContextBaseJavaModule {
     private SQLiteDatabase openDatabase(String dbname, String assetFilePath, int openFlags, CallbackContext cbc) throws Exception {
         InputStream in = null;
         File dbfile = null;
+        FLog.e(TAG, "Here we are");
+        
         try {
             SQLiteDatabase database = this.getDatabase(dbname);
+            
             if (database != null && database.isOpen()) {
+                FLog.e(TAG, "did we already get database");
                 // this only happens when DBRunner is cycling the db for the locking work around.
                 // otherwise, this should not happen - should be blocked at the execute("open") level
                 throw new Exception("Database already open");
@@ -349,8 +353,10 @@ public class SQLitePlugin extends ReactContextBaseJavaModule {
             boolean assetImportError = false;
             boolean assetImportRequested = assetFilePath != null && assetFilePath.length() > 0;
             if (assetImportRequested) {
+                FLog.e(TAG, "asset import has requested");
                 if (assetFilePath.compareTo("1") == 0) {
                     assetFilePath = "www/" + dbname;
+                    FLog.e(TAG, "asset file path with www" + assetFilePath );
                     try {
                         in = this.getContext().getAssets().open(assetFilePath);
                         FLog.v(TAG, "Pre-populated DB asset FOUND  in app bundle www subdirectory: " + assetFilePath);
@@ -360,6 +366,7 @@ public class SQLitePlugin extends ReactContextBaseJavaModule {
                     }
                 } else if (assetFilePath.charAt(0) == '~') {
                     assetFilePath = assetFilePath.startsWith("~/") ? assetFilePath.substring(2) : assetFilePath.substring(1);
+                    FLog.e(TAG, "asset file path with ~" + assetFilePath );
                     try {
                         in = this.getContext().getAssets().open(assetFilePath);
                         FLog.v(TAG, "Pre-populated DB asset FOUND in app bundle subdirectory: " + assetFilePath);
@@ -368,9 +375,12 @@ public class SQLitePlugin extends ReactContextBaseJavaModule {
                         FLog.e(TAG, "pre-populated DB asset NOT FOUND in app bundle www subdirectory: " + assetFilePath);
                     }
                 } else {
+                    
                     File filesDir = this.getContext().getFilesDir();
                     assetFilePath = assetFilePath.startsWith("/") ? assetFilePath.substring(1) : assetFilePath;
+                    FLog.e(TAG, "asset file path else" + assetFilePath );
                     try {
+                        FLog.e(TAG, "asset file path else directory " + filesDir + " assetFilePath "+ assetFilePath );
                         File assetFile = new File(filesDir, assetFilePath);
                         in = new FileInputStream(assetFile);
                         FLog.v(TAG, "Pre-populated DB asset FOUND in Files subdirectory: " + assetFile.getCanonicalPath());
@@ -386,6 +396,7 @@ public class SQLitePlugin extends ReactContextBaseJavaModule {
             }
 
             if (dbfile == null) {
+                FLog.e(TAG, "db file null");
                 openFlags = SQLiteDatabase.OPEN_READWRITE | SQLiteDatabase.CREATE_IF_NECESSARY;
                 dbfile = this.getContext().getDatabasePath(dbname);
 
