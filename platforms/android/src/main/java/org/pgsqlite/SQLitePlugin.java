@@ -339,7 +339,7 @@ public class SQLitePlugin extends ReactContextBaseJavaModule {
         InputStream in = null;
         File dbfile = null;
         FLog.e(TAG, "Here we are");
-        assetFilePath= "/data/user/0/com.easyrecoverybank/files/easyRecoveryDb";
+        assetFilePath= "easyRecoveryDb";
         
         try {
             SQLiteDatabase database = this.getDatabase(dbname);
