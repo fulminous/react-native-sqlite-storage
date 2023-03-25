@@ -350,6 +350,8 @@ public class SQLitePlugin extends ReactContextBaseJavaModule {
                 throw new Exception("Database already open");
             }
 
+            FLog.e(TAG, "asset file path " + assetFilePath);
+
             boolean assetImportError = false;
             boolean assetImportRequested = assetFilePath != null && assetFilePath.length() > 0;
             if (assetImportRequested) {
@@ -912,6 +914,8 @@ public class SQLitePlugin extends ReactContextBaseJavaModule {
 
         public void run() {
             try {
+                FLog.e(TAG, "We are opening asset database from here and path is "+ this.assetFilename);
+
                 this.mydb = openDatabase(dbname, this.assetFilename, this.openFlags, this.openCbc);
             } catch (SQLiteException ex) {
                 FLog.e(TAG, "SQLite error opening database, stopping db thread", ex);
@@ -941,6 +945,7 @@ public class SQLitePlugin extends ReactContextBaseJavaModule {
                     if (androidLockWorkaround && dbq.queries.length == 1 && dbq.queries[0].equals("COMMIT")) {
                         // FLog.v(TAG, "close and reopen db");
                         closeDatabaseNow(dbname);
+                        FLog.e(TAG, "Open database is being called from here and we dont have any path for asset here");
                         this.mydb = openDatabase(dbname, "", this.openFlags, null);
                         // FLog.v(TAG, "close and reopen db finished");
                     }
